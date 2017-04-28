@@ -1,0 +1,24 @@
+# VI mode
+bindkey -v
+bindkey -M viins 'jk' vi-cmd-mode
+# Prompt with VI mode
+function zle-line-init zle-keymap-select {
+    VIM_PROMPT="%{$fg_bold[yellow]%} [% NORMAL]% %{$reset_color%}"
+    RPS1="${${KEYMAP/vicmd/$VIM_PROMPT}/(main|viins)/} $EPS1"
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+export TERM="screen-256color"
+eval `dircolors ~/dircolors.256dark`
+
+if [ -f ~/.zshrc.aliases ]; then
+	source ~/.zshrc.aliases
+fi
+
+fortune literature riddles
+
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/autojump/autojump.zsh

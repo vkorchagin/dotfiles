@@ -18,6 +18,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
+Plug 'christoomey/vim-tmux-navigator'
 " Add new plugins here
 call plug#end()
 
@@ -78,6 +79,13 @@ vnoremap > >gv
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
+
+" Easy navigation between splits. Instead ctrl-w then j, it's just ctrl-j.
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 " Map spacebar to leader
 " map <Space> <Leader>
 
@@ -104,7 +112,7 @@ imap jk <Esc>
 " Show current branch in status line
 "set stl=%F-%{fugitive#statusline()}
 
-if filereadable("/user/share/vim/google/google.com")
+if filereadable("/usr/share/vim/google/google.vim")
   source /usr/share/vim/google/google.vim
   filetype plugin indent on
 
@@ -174,10 +182,10 @@ let g:tagbar_type_go = {
 \ }
 
 " Toggle tagbar on Ctrl+L
-nmap <C-l> :TagbarToggle<CR>
+nmap <leader>l :TagbarToggle<CR>
 
 " Toggle NERDTree on Ctrl+K
-nmap <C-k> :NERDTreeToggle<CR>
+nmap <leader>k :NERDTreeToggle<CR>
 
 " Open tagbar on the left
 let g:tagbar_left = 1
