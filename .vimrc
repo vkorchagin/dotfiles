@@ -13,7 +13,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'flazz/vim-colorschemes'
 Plug 'fholgado/minibufexpl.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
+"Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'Quramy/tsuquyomi'
 Plug 'leafgarland/typescript-vim'
@@ -26,6 +26,7 @@ Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'w0rp/ale'
 " Add new plugins here
 call plug#end()
 
@@ -48,7 +49,9 @@ set smarttab                    " Smart tab
 set ttyfast                     " Faster redrawing
 set viminfo+=!                  " Viminfo include !
 
-set ttymouse=xterm2
+if !has('nvim')
+    set ttymouse=xterm2
+endif
 
 " No help Uganda information, and overwrite read messages to avoid PRESS ENTER prompts
 set shortmess=atOI
@@ -143,21 +146,11 @@ if filereadable("/usr/share/vim/google/google.vim")
   autocmd FileType bzl AutoFormatBuffer buildifier
   " Format Markdown files
   autocmd FileType markdown AutoFormatBuffer mdformat
+
+  let g:ale_linters = { 'python': ['gpylint'] }
 else
   filetype plugin indent on
 endif
-
-" Run gpylint on :Lint
-function! s:GPyLint()
-  let a:lint = '/usr/bin/gpylint '
-      \. '--msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}"'
-  cexpr filter(split(system(a:lint . ' ' . expand('%')), '\n'),
-      \ 'v:val =~ "[^:]:\\d\\+:"')
-  copen
-  setl cursorline
-  cc
-endfunction
-au FileType python command! Lint :call s:GPyLint()
 
 " Tagbar support for Go with gotags
 let g:tagbar_type_go = {
@@ -188,11 +181,14 @@ let g:tagbar_type_go = {
     \ 'ctagsargs' : '-sort -silent'
 \ }
 
-" Toggle tagbar on Ctrl+L
+" Toggle tagbar on <leader>+L
 nmap <leader>l :TagbarToggle<CR>
 
-" Toggle NERDTree on Ctrl+K
+" Toggle NERDTree on <leader>+K
 nmap <leader>k :NERDTreeToggle<CR>
+
+" Do YCM FixIt on <leader>+f
+nmap <leader>f :YcmCompleter FixIt<CR>
 
 " Open tagbar on the left
 let g:tagbar_left = 1
@@ -215,14 +211,18 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
 " AutoPairs settings
-let g:AutoPairsFlyMode = 1
+"let g:AutoPairsFlyMode = 1
+
+" vim-workspace settings
+noremap <Tab> :MBEbn<CR>
+noremap <S-Tab> :MBEbp<CR>
 
 syntax on
 
 set background=dark
 let g:solarized_termtrans = 1
 color solarized
-"color molokai
+" color molokai
 
 " Highlight variable under cursor
 "autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
