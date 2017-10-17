@@ -27,6 +27,9 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 " Add new plugins here
 call plug#end()
 
@@ -142,12 +145,19 @@ if filereadable("/usr/share/vim/google/google.vim")
   Glug critique
   Glug grok
 
+  source /usr/share/vim/google/gtags.vim
+  nnoremap <C-]> :exe 'let searchtag= "' . expand('<cword>') . '"' \| :exe 'let @/= "' . searchtag . '"'<CR> \| :exe 'Gtlist ' . searchtag <CR>
+
   " Format BUILD files
   autocmd FileType bzl AutoFormatBuffer buildifier
   " Format Markdown files
   autocmd FileType markdown AutoFormatBuffer mdformat
 
-  let g:ale_linters = { 'python': ['gpylint'] }
+  let g:ale_linters = { 'python': [] }
+
+  " vim-go tuning for google3
+  let g:go_disable_autoinstall = 1
+  let g:go_gocode_bin = 'gocode'
 else
   filetype plugin indent on
 endif
@@ -219,10 +229,12 @@ noremap <S-Tab> :MBEbp<CR>
 
 syntax on
 
-set background=dark
-let g:solarized_termtrans = 1
-color solarized
+"set background=dark
+"let g:solarized_termtrans = 1
+"color solarized
+"
 " color molokai
+color railscasts
 
 " Highlight variable under cursor
 "autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
