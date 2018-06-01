@@ -1,5 +1,7 @@
 set nocompatible
 
+let mapleader=" "
+
 " vim-plug auto install
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -11,9 +13,9 @@ endif
 call plug#begin()
 Plug 'jiangmiao/auto-pairs'
 Plug 'flazz/vim-colorschemes'
+Plug 'rafi/awesome-vim-colorschemes'
 Plug 'fholgado/minibufexpl.vim'
 Plug 'scrooloose/nerdtree'
-"Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'Quramy/tsuquyomi'
 Plug 'leafgarland/typescript-vim'
@@ -30,6 +32,16 @@ Plug 'w0rp/ale'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/async.vim'
+Plug 'lepture/vim-jinja'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-notes'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'yuttie/comfortable-motion.vim'
+Plug 'myusuf3/numbers.vim'
+Plug 'vimwiki/vimwiki'
+Plug 'ervandew/supertab'
 " Add new plugins here
 call plug#end()
 
@@ -130,7 +142,7 @@ if filereadable("/usr/share/vim/google/google.vim")
   filetype plugin indent on
 
   Glug youcompleteme-google
-  set completeopt-=preview
+  let g:ycm_autoclose_preview_window_after_insertion = 1
 
   Glug blazedeps
 
@@ -145,19 +157,30 @@ if filereadable("/usr/share/vim/google/google.vim")
   Glug critique
   Glug grok
 
-  source /usr/share/vim/google/gtags.vim
-  nnoremap <C-]> :exe 'let searchtag= "' . expand('<cword>') . '"' \| :exe 'let @/= "' . searchtag . '"'<CR> \| :exe 'Gtlist ' . searchtag <CR>
+  " Glug coverage
+  " Glug coverage-google
 
   " Format BUILD files
   autocmd FileType bzl AutoFormatBuffer buildifier
   " Format Markdown files
-  autocmd FileType markdown AutoFormatBuffer mdformat
+  " autocmd FileType markdown AutoFormatBuffer mdformat
 
-  let g:ale_linters = { 'python': [] }
+  let g:ale_linters = { 'python': ['glint'], 'go': ['glint'], 'cpp': ['glint'], 'proto': ['glint'], 'javascript': ['glint']}
 
   " vim-go tuning for google3
   let g:go_disable_autoinstall = 1
   let g:go_gocode_bin = 'gocode'
+  let g:go_def_mapping_enabled = 0
+
+  " vim-lsp tuning
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'Kythe Language Server',
+      \ 'cmd': {server_info->['/google/data/ro/teams/grok/tools/kythe_languageserver', '--google3']},
+      \ 'whitelist': ['python', 'go', 'cpp'],
+      \})
+  nnoremap <C-]> :LspDefinition<CR>
+
+  " source /google/data/ro/users/er/ershov/bin/iblaze.vim
 else
   filetype plugin indent on
 endif
@@ -198,7 +221,8 @@ nmap <leader>l :TagbarToggle<CR>
 nmap <leader>k :NERDTreeToggle<CR>
 
 " Do YCM FixIt on <leader>+f
-nmap <leader>f :YcmCompleter FixIt<CR>
+nmap <leader>y :YcmCompleter FixIt<CR>
+nmap <leader>f :FormatLines<CR>
 
 " Open tagbar on the left
 let g:tagbar_left = 1
@@ -222,6 +246,7 @@ let g:NERDTrimTrailingWhitespace = 1
 
 " AutoPairs settings
 "let g:AutoPairsFlyMode = 1
+let g:AutoPairsCenterLine = 0
 
 " vim-workspace settings
 noremap <Tab> :MBEbn<CR>
@@ -229,12 +254,31 @@ noremap <S-Tab> :MBEbp<CR>
 
 syntax on
 
-"set background=dark
-"let g:solarized_termtrans = 1
-"color solarized
+set background=dark
+" let g:solarized_termtrans = 1
+" color solarized
 "
 " color molokai
-color railscasts
+" color railscasts
+color rdark-terminal2
 
 " Highlight variable under cursor
-"autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+" autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+
+" vim-smooth-scroll setting
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+
+" Wrap text at 80 characters in Markdown files
+au BufRead,BufNewFile *.md setlocal textwidth=80
+
+" vim-better-whitespace settings
+let g:better_whitespace_enabled = 1
+let g:strip_whitespace_on_save = 1
+highlight ExtraWhitespace ctermbg=5
+
+" comfortable-scrolling
+" let g:comfortable_motion_friction = 0.0
+" let g:comfortable_motion_air_drag = 0.0
