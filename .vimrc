@@ -42,6 +42,7 @@ Plug 'yuttie/comfortable-motion.vim'
 Plug 'myusuf3/numbers.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'ervandew/supertab'
+Plug 'haya14busa/incsearch.vim'
 " Add new plugins here
 call plug#end()
 
@@ -254,13 +255,14 @@ noremap <S-Tab> :MBEbp<CR>
 
 syntax on
 
-set background=dark
 " let g:solarized_termtrans = 1
+" set background=dark
 " color solarized
 "
 " color molokai
 " color railscasts
-color rdark-terminal2
+" color jellybeans
+color tender
 
 " Highlight variable under cursor
 " autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
@@ -282,3 +284,8 @@ highlight ExtraWhitespace ctermbg=5
 " comfortable-scrolling
 " let g:comfortable_motion_friction = 0.0
 " let g:comfortable_motion_air_drag = 0.0
+
+" incsearh settings
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
