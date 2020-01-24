@@ -11,6 +11,11 @@ endif
 
 " Plugins
 call plug#begin()
+if !filereadable("/usr/share/vim/google/google.vim")
+	Plug 'Valloric/YouCompleteMe'
+endif
+Plug 'jiangmiao/auto-pairs'
+Plug 'flazz/vim-colorschemes'
 Plug 'rafi/awesome-vim-colorschemes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'fholgado/minibufexpl.vim'
@@ -48,8 +53,12 @@ Plug 'junegunn/fzf.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'liuchengxu/vim-clap'
 Plug 'vimwiki/vimwiki'
+Plug 'rust-lang/rust.vim'
 " Add new plugins here
 call plug#end()
+
+" vim-rust options.
+let g:rustfmt_autosave = 1
 
 set number
 " Use relative line numbers.
@@ -141,6 +150,8 @@ imap jk <Esc>
 
 " Show current branch in status line
 "set stl=%F-%{fugitive#statusline()}
+
+let g:ycm_python_binary_path = 'python3'
 
 if filereadable("/usr/share/vim/google/google.vim")
   source /usr/share/vim/google/google.vim
