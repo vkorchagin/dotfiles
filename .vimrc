@@ -11,22 +11,23 @@ endif
 
 " Plugins
 call plug#begin()
-Plug 'jiangmiao/auto-pairs'
-Plug 'flazz/vim-colorschemes'
 Plug 'rafi/awesome-vim-colorschemes'
+Plug 'jiangmiao/auto-pairs'
 Plug 'fholgado/minibufexpl.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
 Plug 'Quramy/tsuquyomi'
 Plug 'leafgarland/typescript-vim'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'easymotion/vim-easymotion'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
+Plug 'jlfwong/vim-mercenary'
 Plug 'fatih/vim-go'
 Plug 'junegunn/goyo.vim'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'scrooloose/nerdcommenter'
-Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'ntpeters/vim-better-whitespace'
@@ -35,14 +36,18 @@ Plug 'tpope/vim-repeat'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/async.vim'
 Plug 'lepture/vim-jinja'
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-notes'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'yuttie/comfortable-motion.vim'
 Plug 'myusuf3/numbers.vim'
-Plug 'vimwiki/vimwiki'
-Plug 'ervandew/supertab'
 Plug 'haya14busa/incsearch.vim'
+Plug 'joshdick/onedark.vim'
+Plug 'luochen1990/rainbow'
+Plug 'inside/vim-search-pulse'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'Yggdroot/indentLine'
+Plug 'liuchengxu/vim-clap'
+Plug 'vimwiki/vimwiki'
 " Add new plugins here
 call plug#end()
 
@@ -75,9 +80,10 @@ set shortmess=atOI
 set ignorecase     " Case sensitive search
 set smartcase      " Case sensitive when uc present
 set scrolloff=3    " Minumum lines to keep above and below cursor
-set shiftwidth=4   " Use indents of 4 spaces
-set tabstop=4      " An indentation every four columns
-set softtabstop=4  " Let backspace delete indent
+set shiftwidth=2   " Use indents of 2 spaces
+set tabstop=2      " An indentation every two columns
+set softtabstop=2  " Let backspace delete indent
+set expandtab      " Use spaces instead of tabs
 set splitright     " Puts new vsplit windows to the right of the current
 "set splitbelow     " Puts new split windows to the bottom of the current
 set autowrite      " Automatically write a file when leaving a modified buffer
@@ -112,16 +118,14 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" Map spacebar to leader
-" map <Space> <Leader>
-
 " Enabled spell checking for English.
-setlocal spell spelllang=en_us
+" setlocal spell spelllang=en_us
 
 if has('gui_running')
   set guioptions-=r        " Hide the right scrollbar
   set guioptions-=L        " Hide the left scrollbar
-  set guioptions-=T
+  set guioptions-=T        " Hide the toolbar
+  set guioptions-=m        " Hide the menu bar
   set guioptions-=e
   set shortmess+=c
   " No annoying sound on errors
@@ -144,6 +148,7 @@ if filereadable("/usr/share/vim/google/google.vim")
 
   Glug youcompleteme-google
   let g:ycm_autoclose_preview_window_after_insertion = 1
+  let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
 
   Glug blazedeps
 
@@ -164,14 +169,18 @@ if filereadable("/usr/share/vim/google/google.vim")
   " Format BUILD files
   autocmd FileType bzl AutoFormatBuffer buildifier
   " Format Markdown files
-  " autocmd FileType markdown AutoFormatBuffer mdformat
+  autocmd FileType md AutoFormatBuffer mdformat
 
-  let g:ale_linters = { 'python': ['glint'], 'go': ['glint'], 'cpp': ['glint'], 'proto': ['glint'], 'javascript': ['glint']}
+  let g:ale_linters = { 'python': ['glint'], 'go': ['glint'], 'cpp': ['glint'], 'proto': ['glint'], 'javascript': ['glint'], 'markdown': []}
 
   " vim-go tuning for google3
   let g:go_disable_autoinstall = 1
   let g:go_gocode_bin = 'gocode'
   let g:go_def_mapping_enabled = 0
+  let g:go_null_module_warning = 0
+  " automatically run lint on :w
+  " set rtp+=$GOPATH/src/golang.org/x/lint/misc/vim
+  " autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
 
   " vim-lsp tuning
   au User lsp_setup call lsp#register_server({
@@ -179,12 +188,20 @@ if filereadable("/usr/share/vim/google/google.vim")
       \ 'cmd': {server_info->['/google/data/ro/teams/grok/tools/kythe_languageserver', '--google3']},
       \ 'whitelist': ['python', 'go', 'cpp'],
       \})
-  nnoremap <C-]> :LspDefinition<CR>
+  nmap <Leader>gd :LspDefinition<cr>
+  " nmap <Leader>gt :tab split<cr>:LspDefinition<cr>
+  nmap <Leader>gt :windo :LspDefinition<cr>
+  nmap <Leader>gs :sp<cr>:LspDefinition<cr>
+  nmap <Leader>gv :vsp<cr>:LspDefinition<cr>
 
   " source /google/data/ro/users/er/ershov/bin/iblaze.vim
+  " source ~/iblaze.vim
 else
   filetype plugin indent on
 endif
+
+" Show tabs as 2 spaces in .go files
+autocmd BufNewFile,BufRead,BufWritePost *.go setlocal noexpandtab tabstop=2 shiftwidth=2 cc=100 textwidth=100
 
 " Tagbar support for Go with gotags
 let g:tagbar_type_go = {
@@ -221,15 +238,16 @@ nmap <leader>l :TagbarToggle<CR>
 " Toggle NERDTree on <leader>+K
 nmap <leader>k :NERDTreeToggle<CR>
 
-" Do YCM FixIt on <leader>+f
+" Do YCM FixIt on <leader>+y
 nmap <leader>y :YcmCompleter FixIt<CR>
 nmap <leader>f :FormatLines<CR>
 
 " Open tagbar on the left
-let g:tagbar_left = 1
+" let g:tagbar_left = 1
 
 " Usa patched fonts in airline
 let g:airline_powerline_fonts = 1
+let g:airline_theme = 'violet'
 
 " Syntastic recommended settings
 let g:syntastic_always_populate_loc_list = 1
@@ -248,12 +266,11 @@ let g:NERDTrimTrailingWhitespace = 1
 " AutoPairs settings
 "let g:AutoPairsFlyMode = 1
 let g:AutoPairsCenterLine = 0
+let g:AutoPairsMultilineClose = 0
 
 " vim-workspace settings
 noremap <Tab> :MBEbn<CR>
 noremap <S-Tab> :MBEbp<CR>
-
-syntax on
 
 " let g:solarized_termtrans = 1
 " set background=dark
@@ -262,7 +279,25 @@ syntax on
 " color molokai
 " color railscasts
 " color jellybeans
-color tender
+" color tender
+
+" Onedark color scheme
+" set t_ut=
+" if (empty($TMUX))
+  " if (has("nvim"))
+    " let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  " endif
+  " if (has("termguicolors"))
+    " set termguicolors
+  " endif
+" endif
+" let g:onedark_termcolors=16
+" syntax on
+color onedark
+" set background=dark
+" color one
+" set t_8b=[48;2;%lu;%lu;%lum
+" set t_8f=[38;2;%lu;%lu;%lum
 
 " Highlight variable under cursor
 " autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
@@ -274,7 +309,12 @@ noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
 noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
 " Wrap text at 80 characters in Markdown files
-au BufRead,BufNewFile *.md setlocal textwidth=80
+au BufRead,BufNewFile *.md setlocal textwidth=80 spell
+" Wrap text in hg editor
+au BufRead,BufNewFile *.hg.txt setlocal textwidth=80 spell
+" Syntax check in Piper editor
+au BufRead,BufNewFile .pipertmp* setlocal textwidth=80 spell
+
 
 " vim-better-whitespace settings
 let g:better_whitespace_enabled = 1
@@ -289,3 +329,19 @@ highlight ExtraWhitespace ctermbg=5
 map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
+
+" vim-signify
+let g:singify_vcs_list = ['hg', 'perforce']
+let g:signify_vcs_cmds = {
+    \ 'perforce': 'p4 info >& /dev/null && env G4MULTIDIFF=0 P4DIFF=%d p4 diff -dU0 %f'
+    \ }
+
+" enable rainbow
+let g:rainbow_active = 1
+
+" vim-clap
+nmap <Leader>/ :Clap blines<cr>
+
+" Use Markdown in vimwiki
+" let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      " \ 'syntax': 'markdown', 'ext': '.md'}]
