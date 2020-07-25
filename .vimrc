@@ -1,4 +1,4 @@
-set nocompatible
+ set nocompatible
 
 let mapleader=" "
 
@@ -28,7 +28,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'easymotion/vim-easymotion'
 " Plug 'tpope/vim-fugitive'
 Plug 'jlfwong/vim-mercenary'
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'junegunn/goyo.vim'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'scrooloose/nerdcommenter'
@@ -54,6 +54,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'liuchengxu/vim-clap'
 Plug 'vimwiki/vimwiki'
 Plug 'rust-lang/rust.vim'
+Plug 'da-x/name-assign.vim'
 " Add new plugins here
 call plug#end()
 
@@ -150,8 +151,6 @@ imap jk <Esc>
 
 " Show current branch in status line
 "set stl=%F-%{fugitive#statusline()}
-
-let g:ycm_python_binary_path = 'python3'
 
 if filereadable("/usr/share/vim/google/google.vim")
   source /usr/share/vim/google/google.vim
@@ -305,10 +304,6 @@ noremap <S-Tab> :MBEbp<CR>
 " let g:onedark_termcolors=16
 " syntax on
 color onedark
-" set background=dark
-" color one
-" set t_8b=[48;2;%lu;%lu;%lum
-" set t_8f=[38;2;%lu;%lu;%lum
 
 " Highlight variable under cursor
 " autocmd CursorMoved * exe printf('match FoldColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
@@ -352,6 +347,9 @@ let g:rainbow_active = 1
 
 " vim-clap
 nmap <Leader>/ :Clap blines<cr>
+
+" Custom mapping for name-assign.vim
+vmap <leader>n <Plug>NameAssign
 
 " Use Markdown in vimwiki
 " let g:vimwiki_list = [{'path': '~/vimwiki/',

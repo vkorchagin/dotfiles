@@ -24,6 +24,4 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=23'
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/autojump/autojump.zsh
 
-alias vim=nvim
-
-alias stadia="chromium www.stadia.com --ignore-gpu-blacklist --disable-gpu-vsync"
+bindkey '^ ' autosuggest-accept
